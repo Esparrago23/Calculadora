@@ -27,10 +27,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.patatus.calculadora.presentation.viewmodel.CalculadoraViewmodel
+import com.patatus.calculadora.presentation.viewmodel.CalculatorAction
+import com.patatus.calculadora.presentation.viewmodel.CalculatorOperation
 
 //wip: work in progress
 @Composable
-fun CalculadoraScreen(){
+fun CalculadoraScreen(
+    viewModel: CalculadoraViewmodel = androidx.lifecycle.viewmodel.compose.viewModel()
+    ){
+    val state = viewModel.state
+    val displayText = if (state.number1 == "Error") {
+        "Error"
+    } else {
+        state.number1 + (state.operation?.symbol ?: "") + state.number2
+    }
     Column(modifier = Modifier
         .fillMaxSize()
         .background(Color.DarkGray)
@@ -43,7 +54,7 @@ fun CalculadoraScreen(){
             contentAlignment = Alignment.BottomEnd
         ) {
             Text(
-                text = "123.45",
+                text = displayText.ifBlank { "0" },
                 color = Color.White,
                 fontSize = 80.sp,
                 textAlign = TextAlign.End,
@@ -55,36 +66,72 @@ fun CalculadoraScreen(){
             verticalArrangement = Arrangement.spacedBy(7.dp)
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                CalculatorButton(text = "AC", modifier = Modifier.weight(2f), backgroundColor = Color.LightGray, textColor = Color.Black, onClick = {})
-                CalculatorButton(text = "Del", modifier = Modifier.weight(1f), backgroundColor = Color.LightGray, textColor = Color.Black, onClick = {})
-                CalculatorButton(text = "/", modifier = Modifier.weight(1f), backgroundColor = Color(0xFFE0F7FA), onClick = {})
+                CalculatorButton(text = "AC", modifier = Modifier.weight(2f), backgroundColor = Color.LightGray, textColor = Color.Black, onClick = {
+                    viewModel.onAction(CalculatorAction.Clear)
+                })
+                CalculatorButton(text = "Del", modifier = Modifier.weight(1f), backgroundColor = Color.LightGray, textColor = Color.Black, onClick = {
+                    viewModel.onAction(CalculatorAction.Delete)
+                })
+                CalculatorButton(text = "/", modifier = Modifier.weight(1f), backgroundColor = Color(0xFFE0F7FA), onClick = {
+                    viewModel.onAction(CalculatorAction.Operation(CalculatorOperation.Divide))
+                })
             }
             // Fila 2
             Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                CalculatorButton(text = "7", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "8", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "9", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "*", modifier = Modifier.weight(1f), backgroundColor = Color(0xFFE0F7FA), onClick = {})
+                CalculatorButton(text = "7", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(7))
+                })
+                CalculatorButton(text = "8", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(8))
+                })
+                CalculatorButton(text = "9", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(9))
+                })
+                CalculatorButton(text = "*", modifier = Modifier.weight(1f), backgroundColor = Color(0xFFE0F7FA), onClick = {
+                    viewModel.onAction(CalculatorAction.Operation(CalculatorOperation.Multiply))
+                })
             }
             // Fila 3
             Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                CalculatorButton(text = "4", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "5", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "6", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "-", modifier = Modifier.weight(1f), backgroundColor = Color(0xFFE0F7FA), onClick = {})
+                CalculatorButton(text = "4", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(4))
+                })
+                CalculatorButton(text = "5", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(5))
+                })
+                CalculatorButton(text = "6", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(6))
+                })
+                CalculatorButton(text = "-", modifier = Modifier.weight(1f), backgroundColor = Color(0xFFE0F7FA), onClick = {
+                    viewModel.onAction(CalculatorAction.Operation(CalculatorOperation.Subtract))
+                })
             }
             // Fila 4
             Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                CalculatorButton(text = "1", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "2", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "3", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "+", modifier = Modifier.weight(1f), backgroundColor = Color(0xFFE0F7FA), onClick = {})
+                CalculatorButton(text = "1", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(1))
+                })
+                CalculatorButton(text = "2", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(2))
+                })
+                CalculatorButton(text = "3", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(3))
+                })
+                CalculatorButton(text = "+", modifier = Modifier.weight(1f), backgroundColor = Color(0xFFE0F7FA), onClick = {
+                    viewModel.onAction(CalculatorAction.Operation(CalculatorOperation.Add))
+                })
             }
             // Fila 5
             Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                CalculatorButton(text = "0", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = ".", modifier = Modifier.weight(1f), onClick = {})
-                CalculatorButton(text = "=", modifier = Modifier.weight(2f), backgroundColor = Color(0xFFE0F7FA), onClick = {})
+                CalculatorButton(text = "0", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Number(0))
+                })
+                CalculatorButton(text = ".", modifier = Modifier.weight(1f), onClick = {
+                    viewModel.onAction(CalculatorAction.Decimal)
+                })
+                CalculatorButton(text = "=", modifier = Modifier.weight(2f), backgroundColor = Color(0xFFE0F7FA), onClick = {
+                    viewModel.onAction(CalculatorAction.Calculate)
+                })
             }
         }
     }
